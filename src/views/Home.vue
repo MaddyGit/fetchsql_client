@@ -53,14 +53,17 @@ export default {
     , generateResults () {
       for (let i = 0; i < this.queries.length; i++) {
         
-        this.fetchResult(this.queries[i].query)
-        .then(raw => raw.json())
-        .then(rs => {
-          this.$store.commit('addResultSet', rs[0])
-          this.$router.push({path: 'results'})
-        })
-        // eslint-disable-next-line
-        .catch(err => console.log(err))
+        const resPromise = this.fetchResult(this.queries[i].query)
+        ;((resPromise, header) => {
+          resPromise
+          .then(raw => raw.json())
+          .then(rs => {
+            this.$store.commit('addResultSet', {header, rs: rs[0]})
+            this.$router.push({path: 'results'})
+          })
+          // eslint-disable-next-line
+          .catch(err => console.log(err))
+        })(resPromise, this.queries[i].header)
       }
   }
   , fetchResult (query) {

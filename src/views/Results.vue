@@ -1,16 +1,23 @@
 <template>
     <div id="Results">
         
-        <ul v-for="table in dataWithUID" :key="table.tid">
+        <ul v-for="table in dataWithUID" :key="table.tid" class="tables-list">
             <li>
-                <table>
-                    <tr>
-                        <td v-for="col in rowHeader(table.rows[0])" :key="col" class="table-header">{{col}}</td>
-                    </tr>
+                <table class="table table-stripped">
+                    <thead>
+                        <tr>
+                            <th scope="col" :colspan="table.nosCols"> {{table.header}} </th>
+                        </tr>
+                        <tr>
+                            <th v-for="col in rowHeader(table.rows[0])" :key="col" scope="col">{{col}}</th>
+                        </tr>
+                    </thead>
 
-                    <tr v-for="row in table.rows" :key="row.rid">
-                        <td v-for="colData in rowVals(row)" :key="colData" class="table-row">{{colData}}</td>
-                    </tr>
+                    <tbody>
+                        <tr v-for="row in table.rows" :key="row.rid" :class="rowClass(row)" >
+                            <td v-for="colData in rowVals(row)" :key="colData">{{colData}}</td>
+                        </tr>
+                    </tbody>
                 </table>
             </li>
         </ul>
@@ -23,7 +30,7 @@ export default {
     name: 'Results'
     , data () {
         return {
-            dummyDataOld: [
+            dummyData: [
                 [
                     {keyOne: 'val one', keyTwo: 'val two'}
                     , {keyOne: 'val one again', keyTwo: 'val two again'}
@@ -34,14 +41,15 @@ export default {
                     , {rsthreekone: 'rs 3 val one', rsthreektwo: 'rs 3 val two', rsthreekthree: 'rs 3 val three'}
                 ]
             ]
-            , dummyData: this.$store.getters.resultSets
         }
     }
     , computed: {
         dataWithUID () {
             let oid = 1
             let iid = 1
-            return this.dummyData.map(elem => ({tid: oid++, rows: elem.map(obj => ({rid: iid++, ...obj}))}))
+            let resultSets = this.$store.getters.resultSets
+            
+            return resultSets.map(elem => ({tid: oid++, header: elem.header, nosCols: Object.keys(elem.rs[0]).length, rows: elem.rs.map(obj => ({rid: iid++, ...obj}))}))
         }
     }
     , methods: {
@@ -51,27 +59,17 @@ export default {
         , rowVals (row) {
             return this.rowHeader(row).map(key => row[key])
         }
+        , rowClass (row) {
+            return row.rid % 2 != 0 ? "table-primary" : "table-secondary"
+        }
     }
 }
 </script>
 
 <style lang="scss" scoped>
-table {
-    margin-top: 25px;
+@import '../../node_modules/bootstrap/scss/bootstrap.scss';
 
-    tr {
-        margin-top: 5px;
-
-        td {
-            margin-right: 15px;
-            border-bottom: 1px solid black;
-            border-right: 1px solid gray;
-        }
-    }
-}
-
-.table-header {
-    font-size: 2rem;
-    border-bottom: 4px solid red;
+ul.tables-list {
+    list-style-type: none;
 }
 </style>

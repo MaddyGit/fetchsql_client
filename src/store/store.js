@@ -22,8 +22,8 @@ export const store = new Vuex.Store({
             state.currentQuery.header = query.header
             state.currentQuery.query = query.query
         }
-        , addResultSet(state, rs) {
-            state.resultSets.push(rs)
+        , addResultSet(state, queryResult) {
+            state.resultSets.push({header: queryResult.header, rs: queryResult.rs})
         }
     }
     , getters : {
