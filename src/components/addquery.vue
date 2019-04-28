@@ -19,8 +19,8 @@ export default {
     , data () {
         return {
             query: {
-                header: "Header One"
-                , query: "SELECT * FROM bn_ms_bm_bankmaster LIMIT 0, 10"
+                header: "Default Header"
+                , query: "SELECT Version() AS MYSQL_VERSION;"
             }
         }
     }

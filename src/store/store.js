@@ -8,6 +8,7 @@ export const store = new Vuex.Store({
         queryUrl : 'localhost'
         , queryPort : 5353
         , queryPath : '/getrs'
+        , excelPath : '/getexcel'
         , currentQuery: {
             serial: 1
             , header: ""
@@ -25,6 +26,12 @@ export const store = new Vuex.Store({
         , addResultSet(state, queryResult) {
             state.resultSets.push({header: queryResult.header, rs: queryResult.rs})
         }
+        , incQuerySerial (state) {
+            state.querySerial++
+        }
+        , decQuerySerial (state) {
+            state.querySerial--
+        }
     }
     , getters : {
         currentQuery: state => state.currentQuery
@@ -32,5 +39,7 @@ export const store = new Vuex.Store({
         , queryUrl: state => state.queryUrl
         , queryPort: state => state.queryPort
         , queryPath: state => state.queryPath
+        , excelPath: state => state.excelPath
+        , nextQuerySerial: state => state.querySerial
     }
 })
